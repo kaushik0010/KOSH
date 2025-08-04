@@ -11,7 +11,7 @@ const HeroSection = () => {
                 Save Smarter
             </span>
             <br />
-            Together with KOSHA
+            Together with KOSH
         </h1>
         <p className="mt-6 text-xl text-gray-600 max-w-2xl mx-auto">
         Your hub for collaborative savings — build goals, track progress, and grow together.
