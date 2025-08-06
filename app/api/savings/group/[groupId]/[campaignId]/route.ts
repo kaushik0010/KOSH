@@ -57,6 +57,7 @@ export async function GET(
         }, {status: 200});
 
     } catch (error) {
+        console.error('Error fetching campaign details', error);
         return NextResponse.json({
             success: false,
             message: "Internal server error"
