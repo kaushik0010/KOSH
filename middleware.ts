@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   const {pathname} = request.nextUrl;
 
   const authRoutes = ['/login', '/register', '/verify'];
-  const protectedRoutes = ['/dashboard', '/profile', '/individual', '/create-group', '/groups/'];
+  const protectedRoutes = ['/dashboard', '/profile', '/individual', '/create-group'];
 
   const isMatching = (pathname: string, routes: string[]) => 
     routes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
@@ -17,6 +17,10 @@ export async function middleware(request: NextRequest) {
     
   const isProtectedPage = isMatching(pathname, protectedRoutes);
 
+  const isGroupsListing = pathname === '/groups'
+
+  const isGroupDetails = pathname.startsWith('/groups/') && pathname !== '/groups'
+
   const token = await getToken({req: request, secret: process.env.NEXTAUTH_SECRET});
 
 
@@ -24,7 +28,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/dashboard', request.url))
     }
   
-  if(!token && isProtectedPage) {
+  if(!token && (isProtectedPage || isGroupDetails)) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
@@ -43,5 +47,5 @@ export const config = {
     '/create-group',
     '/groups',
     '/groups/:path*'
-]
+  ]
 }
