@@ -5,6 +5,7 @@ import Header from "@/src/components/Header/Header";
 import Footer from "@/src/components/Footer/Footer";
 import AuthProvider from "@/src/features/auth/context/AuthProvider";
 import { Toaster } from "@/components/ui/sonner"
+import { Analytics } from '@vercel/analytics/next';
 
 const geist = Geist({
   subsets: ['latin'],
@@ -28,6 +29,7 @@ export default function RootLayout({
 
           <main className="min-h-screen">
             {children}
+            <Analytics />
             <Toaster richColors closeButton />
           </main>
 
