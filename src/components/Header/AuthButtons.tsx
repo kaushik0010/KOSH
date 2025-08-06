@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
-import {User} from 'next-auth'
+import {User} from "next-auth"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ChevronDown } from "lucide-react"

@@ -5,7 +5,6 @@ import NavigationComponent from "./Navigation"
 import AuthButtons from "./AuthButtons"
 import { useState } from "react"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 
 const Header = () => {
