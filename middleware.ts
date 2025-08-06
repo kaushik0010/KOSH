@@ -8,10 +8,10 @@ export async function middleware(request: NextRequest) {
   const {pathname} = request.nextUrl;
 
   const authRoutes = ['/login', '/register', '/verify'];
-  const protectedRoutes = ['/dashboard', '/profile', '/individual', '/create-group'];
+  const protectedRoutes = ['/dashboard', '/profile', '/individual', '/create-group', '/groups/'];
 
   const isMatching = (pathname: string, routes: string[]) => 
-      routes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
+    routes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
   
   const isAuthPage = isMatching(pathname, authRoutes);
     
