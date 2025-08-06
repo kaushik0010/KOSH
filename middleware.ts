@@ -41,6 +41,7 @@ export const config = {
     '/dashboard/:path*',
     '/individual/:path*',
     '/create-group',
+    '/groups',
     '/groups/:path*'
 ]
 }
