@@ -11,7 +11,7 @@ const Footer = () => {
               KOSH
             </h3>
             <p className="mt-4 text-gray-600 text-sm">
-              The modern collaboration platform for teams.
+              Your all-in-one platform for goal-driven saving.
             </p>
           </div>
           
@@ -46,7 +46,7 @@ const Footer = () => {
         
         <div className="border-t border-gray-100 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} KOSHA. All rights reserved.
+            © {new Date().getFullYear()} KOSH. All rights reserved.
           </p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <a href="#" className="text-gray-400 hover:text-gray-600">
