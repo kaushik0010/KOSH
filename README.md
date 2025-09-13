@@ -91,6 +91,45 @@ pnpm start
 ---
 ## 📸 Screenshots
 
+### Home Page
+<img width="1920" height="2170" alt="KOSH Home Page" src="https://github.com/user-attachments/assets/d5fbc74c-aecc-4aba-8b28-97a60bc2169e" />
+
+
+### Register
+<img width="1920" height="1020" alt="register" src="https://github.com/user-attachments/assets/e2bc70e8-b411-4801-aeb6-fd1ad4f86e21" />
+
+
+### Login
+<img width="1920" height="1016" alt="login" src="https://github.com/user-attachments/assets/76d8bc41-8ccd-4aa4-b209-21d8a0ed89cf" />
+
+
+### Dashboard
+<img width="1920" height="1333" alt="dashboard" src="https://github.com/user-attachments/assets/bc6486d3-dbf9-425e-b800-b8d3dbaa61ab" />
+
+
+### Update Profile
+<img width="1920" height="1019" alt="update-profile" src="https://github.com/user-attachments/assets/069b95e5-feec-43c0-b8c5-38f980feeaf7" />
+
+
+### Individual Savings Plan Creation
+<img width="1920" height="1091" alt="individual savings plan" src="https://github.com/user-attachments/assets/d1268165-f655-4a57-8412-93271bf297ef" />
+
+
+### All Groups
+<img width="1920" height="1042" alt="all groups" src="https://github.com/user-attachments/assets/708117f9-98ea-49e6-a98d-ebd7e00eb4df" />
+
+
+### Create Group
+<img width="1920" height="1098" alt="create group" src="https://github.com/user-attachments/assets/aaaabdf7-b6c6-4eef-b76c-950af0c8038d" />
+
+
+### Group Details
+<img width="1920" height="1166" alt="group-details" src="https://github.com/user-attachments/assets/bbfc409f-22dd-499c-ab19-b3fd7ca864f0" />
+
+
+### Group Savings Campaign Creation
+<img width="1920" height="1175" alt="create campaign" src="https://github.com/user-attachments/assets/7019218f-ce04-42fe-8ed1-815bd9a39243" />
+
 
 ---
 
