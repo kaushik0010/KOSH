@@ -14,7 +14,7 @@ The platform is built with the **MERN stack + Next.js (App Router)** and follows
 
 👉 [Live Demo](https://kosh-pearl.vercel.app)
 
----
+
 
 ## ✨ Features
 - 🔐 **Authentication** – Secure login/register with email verification (NextAuth + JWT).  
@@ -32,7 +32,7 @@ The platform is built with the **MERN stack + Next.js (App Router)** and follows
   - Max 3 group joining requests allowed per group to prevent spam and system abuse
 - 🌐 **Deployment** – Hosted on **Vercel**, connected with **MongoDB Atlas**.  
 
----
+
 
 ## 🛠️ Tech Stack
 - **Frontend:** Next.js 15, React 19, TailwindCSS, ShadCN UI, Axios
@@ -41,7 +41,7 @@ The platform is built with the **MERN stack + Next.js (App Router)** and follows
 - **Auth:** NextAuth (JWT-based authentication)  
 - **Deployment:** Vercel  
 
----
+
 
 ## 📂 Project Structure
     /app
@@ -55,7 +55,7 @@ The platform is built with the **MERN stack + Next.js (App Router)** and follows
     /components 
         /ui -> Shadcn ui components
 
----
+
 ## ⚡ Getting Started
 
 ### 1️⃣ Clone the Repository
@@ -88,7 +88,7 @@ pnpm build
 pnpm start
 ```
 
----
+
 ## 📸 Screenshots
 
 ### Home Page
@@ -131,14 +131,14 @@ pnpm start
 <img width="1920" height="1175" alt="create campaign" src="https://github.com/user-attachments/assets/7019218f-ce04-42fe-8ed1-815bd9a39243" />
 
 
----
+
 
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
 Feel free to fork this repo and submit a pull request.
 
----
+
 
 ## ⭐ Support
 
