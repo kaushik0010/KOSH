@@ -2,16 +2,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import {format} from "date-fns"
 
-export type Campaign = {
-  _id: string;
-  campaignName: string;
-  amountPerMonth: number;
-  totalAmount: number;
-  amountSaved: number;
-  startDate: string;
-  endDate: string;
-}
-
 export const columns: ColumnDef<Campaign>[] = [
   { accessorKey: "campaignName", header: "Campaign Name" },
   { accessorKey: "amountPerMonth", header: "Monthly Amount ($)" },

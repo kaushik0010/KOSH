@@ -46,6 +46,8 @@ const groupMembershipSchema: Schema<GroupMembership> = new Schema({
     }
 }, { timestamps: true });
 
+groupMembershipSchema.index({ userId: 1, status: 1});
+
 const GroupMembershipModel = 
     (mongoose.models.GroupMembership as mongoose.Model<GroupMembership>) ||
     mongoose.model<GroupMembership>("GroupMembership", groupMembershipSchema)

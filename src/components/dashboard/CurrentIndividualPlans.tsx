@@ -1,25 +1,26 @@
 'use client'
 
 import axios, { AxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DataTable } from "./individual-savings-table/data-table";
-import { Campaign, columns } from "./individual-savings-table/columns";
+import { columns } from "./individual-savings-table/columns";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ApiResponse } from "@/src/features/auth/types/apiResponse";
 import { DollarSign, Loader2 } from "lucide-react";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
-const CurrentIndividualPlans = () => {
-  const [campaign, setCampaign] = useState<Campaign | null>(null);
+const CurrentIndividualPlans = ({ initialCampaign }: { initialCampaign: Campaign | null }) => {
+  const [campaign, setCampaign] = useState(initialCampaign);
   const [isLoading, setIsLoading] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [payDialogOpen, setPayDialogOpen] = useState(false);
   const [collectDialogOpen, setCollectDialogOpen] = useState(false);
+
+  const router = useRouter();
 
   const individualSavingsId = campaign?._id as Campaign["_id"];
   const amountToPay = campaign?.amountPerMonth as Campaign["amountPerMonth"];
@@ -30,13 +31,6 @@ const CurrentIndividualPlans = () => {
 
   const progress = campaign ? Math.min(100, (campaign.amountSaved / campaign.totalAmount) * 100) : 0;
 
-  useEffect(() => {
-    axios.get('/api/savings/individual/me')
-      .then((res) => setCampaign(res.data.campaign))
-      .catch((err) => console.error("Error loading campaign", err))
-      .finally(() => setLoading(false));
-  }, [])
-
   const handleIndividualPay = async(savingId: string, amountPaid: number) => {
     try {
       setIsLoading(true);
@@ -44,9 +38,7 @@ const CurrentIndividualPlans = () => {
         amountPaid
       });
       toast.success(response.data.message || "Monthly amount paid successfully");
-      setTimeout(() => {
-        window.location.reload()
-      }, 500)
+      router.refresh();
 
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
@@ -54,6 +46,7 @@ const CurrentIndividualPlans = () => {
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
+      setPayDialogOpen(false);
     }
   }
 
@@ -62,9 +55,7 @@ const CurrentIndividualPlans = () => {
       setIsLoading(true);
       const response = await axios.patch(`/api/savings/individual/${savingId}/payout`);
       toast.success(response.data.message || "Payout successful");
-      setTimeout(() => {
-        window.location.reload()
-      }, 500)
+      router.refresh();
 
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
@@ -72,19 +63,9 @@ const CurrentIndividualPlans = () => {
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
+      setCollectDialogOpen(false);
     }
   }
-
-  if (loading) return (
-    <Card className="animate-pulse">
-      <CardHeader>
-        <CardTitle>Loading savings plans...</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Skeleton className="h-60 w-full" />
-      </CardContent>
-    </Card>
-  )
 
   if(!campaign) return (
     <Card>

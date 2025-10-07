@@ -9,7 +9,7 @@ export async function GET(request: Request) {
 
         const listAllGroups = await GroupModel.find({})
             .populate("admin", "name email")
-            .sort({ date: -1 })
+            .sort({ createdAt: -1 })
     
 
         if(listAllGroups.length === 0) {

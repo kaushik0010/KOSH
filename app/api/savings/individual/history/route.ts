@@ -20,7 +20,7 @@ export async function GET() {
         const campaignHistory = await IndividualSavingModel.find({
             userId: session?.user._id,
             isActive: false,
-        })
+        }).select('campaignName amountSaved endDate')
         
         if(!campaignHistory) {
             return NextResponse.json({

@@ -5,12 +5,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import {format} from "date-fns"
 import { ArrowUpDown } from "lucide-react";
 
-export type WalletTopUp = {
-    amount: number;
-    status: "success" | "failed";
-    date: string;
-}
-
 export const walletTopUpColumns: ColumnDef<WalletTopUp>[] = [
     { 
         accessorKey: "amount", 

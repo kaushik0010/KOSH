@@ -54,6 +54,8 @@ const individualSavingSchema: Schema<IndividualSaving> = new Schema({
     },
 }, {timestamps: true});
 
+individualSavingSchema.index({ userId: 1, isActive: 1 });
+
 const IndividualSavingModel = 
     (mongoose.models.IndividualSaving as mongoose.Model<IndividualSaving>) || 
     mongoose.model<IndividualSaving>("IndividualSaving", individualSavingSchema);

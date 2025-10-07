@@ -5,7 +5,6 @@ import { authOptions } from "../../auth/[...nextauth]/options";
 import UserModel from "@/src/features/auth/models/user.model";
 import GroupMembershipModel from "@/src/features/savings/groups/models/groupMembership.model";
 import GroupModel from "@/src/features/savings/groups/models/group.model";
-import mongoose from "mongoose";
 
 export async function GET(request: NextRequest) {
     try {
