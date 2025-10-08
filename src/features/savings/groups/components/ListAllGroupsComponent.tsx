@@ -1,11 +1,11 @@
 'use client'
 
 import { Button } from '@/components/ui/button';
-import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton';
-import axios from 'axios'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PlusIcon } from 'lucide-react';
+import { useDebouncedCallback } from 'use-debounce';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
 interface Group {
@@ -20,75 +20,30 @@ interface Group {
     maxGroupSize: number;
 }
 
-const ListAllGroupsComponent = () => {
-    const [groups, setGroups] = useState<Group[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+const ListAllGroupsComponent = ({ initialGroups }: { initialGroups: Group[] }) => {
+    const searchParams = useSearchParams();
+    const {replace} = useRouter();
 
-    const [filteredGroups, setFilteredGroups] = useState<Group[]>([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [groupTypeFilter, setGroupTypeFilter] = useState('');
-    const [maxSizeFilter, setMaxSizeFilter] = useState<number | null>(null);
+    const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
+    const [groupTypeFilter, setGroupTypeFilter] = useState(searchParams.get('type') || '');
+    const [maxSizeFilter, setMaxSizeFilter] = useState(searchParams.get('size') || '');
 
-    useEffect(() => {
-        const fetchGroups = async () => {
-            try {
-                const res = await axios.get('/api/savings/group')
-                setGroups(res.data.groups);
-                setFilteredGroups(res.data.groups);
-            } catch (error) {
-                console.error("Error fetching groups", error);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        fetchGroups();
-    }, [])
+    const handleFilterChange = useDebouncedCallback(() => {
+        const params = new URLSearchParams(searchParams);
+        
+        if (searchTerm) params.set('q', searchTerm); else params.delete('q');
+        if (groupTypeFilter) params.set('type', groupTypeFilter); else params.delete('type');
+        if (maxSizeFilter) params.set('size', maxSizeFilter); else params.delete('size');
+        
+        replace(`/groups?${params.toString()}`);
+    }, 300); 
 
     useEffect(() => {
-        const filtered = groups.filter((group) => {
-            const matchesSearch = group.groupName.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesType = groupTypeFilter ? group.groupType === groupTypeFilter : true;
-            const matchesSize = maxSizeFilter !== null ? group.maxGroupSize >= maxSizeFilter : true;
+        handleFilterChange();
+    }, [searchTerm, groupTypeFilter, maxSizeFilter, handleFilterChange]);
 
-            return matchesSearch && matchesType && matchesSize
-        })
-        setFilteredGroups(filtered);
-    }, [searchTerm, groupTypeFilter, maxSizeFilter, groups]);
 
-    if(isLoading) {
-        return (
-            <div className="p-6 space-y-6">
-                <div className="flex justify-between space-y-2">
-                    <Skeleton className="h-8 w-1/3" />
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <Skeleton className="h-10" />
-                        <Skeleton className="h-10" />
-                        <Skeleton className="h-10" />
-                    </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {[...Array(6)].map((_, i) => (
-                        <Card key={i}>
-                            <CardHeader>
-                                <Skeleton className="h-6 w-3/4" />
-                            </CardHeader>
-                            <CardContent className="space-y-2">
-                                <Skeleton className="h-4 w-full" />
-                                <Skeleton className="h-4 w-2/3" />
-                                <Skeleton className="h-4 w-1/2" />
-                                <Skeleton className="h-4 w-1/3" />
-                            </CardContent>
-                            <div className="px-4 pb-4">
-                                <Skeleton className="h-10 w-full" />
-                            </div>
-                        </Card>
-                    ))}
-                </div>
-            </div>
-        )
-    }
-
-    if(groups.length === 0) {
+    if(initialGroups.length === 0) {
         return (
             <div className="p-6 flex flex-col items-center justify-center space-y-4 min-h-[300px]">
                 <div className="text-2xl font-bold text-muted-foreground">No groups available</div>
@@ -136,19 +91,19 @@ const ListAllGroupsComponent = () => {
                     type="number"
                     placeholder="Max group size"
                     value={maxSizeFilter ?? ''}
-                    onChange={e => setMaxSizeFilter(e.target.value ? parseInt(e.target.value) : null)}
+                    onChange={e => setMaxSizeFilter(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     min="1"
                 />
             </div>
 
-            {filteredGroups.length === 0 ? (
+            {initialGroups.length === 0 ? (
                 <div className="bg-gray-50 p-8 rounded-lg text-center">
                     <p className="text-gray-500">No groups match your search criteria</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {filteredGroups.map((group) => (
+                    {initialGroups.map((group) => (
                         <Card key={group._id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
                             <CardHeader className="bg-gray-50 px-4 py-3 border-b border-gray-200">
                                 <CardTitle className="text-lg font-semibold text-gray-800">{group.groupName}</CardTitle>

@@ -47,7 +47,6 @@ const groupCampaignSchema: Schema<GroupCampaign> = new Schema({
         type: Schema.Types.ObjectId, 
         ref: "Group", 
         required: true, 
-        index: true 
     },
     campaignName: { 
         type: String, 
@@ -110,6 +109,8 @@ const groupCampaignSchema: Schema<GroupCampaign> = new Schema({
         default: undefined
     }
 }, {timestamps: true});
+
+groupCampaignSchema.index({ groupId: 1, status: 1, startDate: -1 });
 
 const GroupCampaignModel = 
     (models.GroupCampaign as mongoose.Model<GroupCampaign>) ||

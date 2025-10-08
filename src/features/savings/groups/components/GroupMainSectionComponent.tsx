@@ -24,17 +24,16 @@ import CreateCampaignFormComponent from "./CreateCampaignFormComponent";
 import { toast } from "sonner";
 import { ApiResponse } from "@/src/features/auth/types/apiResponse";
 
-interface GroupMainSectionProps {
-  group: GroupDetails;
-}
 
-const GroupMainSectionComponent = ({ group }: GroupMainSectionProps) => {
+const GroupMainSectionComponent = ({ data }: { data: GroupPageData }) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [expanded, setExpanded] = useState(false);
   const [expandedCampaignDetails, setExpandedCampaignDetails] = useState<CampaignDetails | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [loadingId, setLoadingId] = useState<string | null>(null);
+
+  const { group, activeCampaign, userRole } = data;
 
   const [open, setOpen] = useState(false);
 
@@ -44,11 +43,11 @@ const GroupMainSectionComponent = ({ group }: GroupMainSectionProps) => {
   const searchParams = useSearchParams();
   const campaignIdFromUrl = searchParams.get('campaign');
 
-  const campaign = group.activeCampaign as GroupDetails["activeCampaign"];
+  const campaign = activeCampaign as GroupPageData["activeCampaign"];
   const userId = session?.user?._id;
-  const isAdmin = group.admin._id === userId;
+  const isAdmin = userRole === 'admin';
 
-  const isMember = group.members.some((m: any) => m._id === userId);
+  const isMember = data.members.some((m: any) => m._id === userId);
 
   const today = new Date();
   const dayOfMonth = today.getDate();
@@ -67,7 +66,7 @@ const GroupMainSectionComponent = ({ group }: GroupMainSectionProps) => {
   const isCampaignParticipant = expandedCampaignDetails?.participants.some((p: any) => p._id === userId);
   const participantId = isCampaignParticipant ? userId : undefined;
 
-  const adminId = group.admin._id;
+  const adminId = data.group.admin._id;
 
 
   if (!campaign) {
@@ -197,9 +196,7 @@ const GroupMainSectionComponent = ({ group }: GroupMainSectionProps) => {
           amountPaid
         });
         toast.success(response.data.message || "Monthly amount paid successfully");
-        setTimeout(() => {
-          window.location.reload()
-        }, 500)
+        router.refresh();
 
       } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
@@ -217,9 +214,7 @@ const GroupMainSectionComponent = ({ group }: GroupMainSectionProps) => {
       setLoadingDetails(true);
       const response = await axios.post(`/api/savings/group/${groupId}/${campaignId}/distribute`);
       toast.success(response.data.message || "Savings distributed successfully");
-      setTimeout(() => {
-        window.location.reload()
-      }, 500);
+      router.refresh();
 
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;

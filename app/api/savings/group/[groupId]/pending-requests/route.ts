@@ -3,7 +3,7 @@ import dbConnect from "@/src/features/auth/lib/dbConnect";
 import UserModel from "@/src/features/auth/models/user.model";
 import GroupModel from "@/src/features/savings/groups/models/group.model";
 import GroupMembershipModel from "@/src/features/savings/groups/models/groupMembership.model";
-import { GroupMemberPopulated } from "@/src/features/savings/groups/types/GroupMember.types";
+import { GroupMemberPopulated } from "@/types/GroupMember.types";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";

@@ -5,27 +5,20 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ApiResponse } from "@/src/features/auth/types/apiResponse";
 import axios, { AxiosError } from "axios";
 import { Check, Loader2, UserIcon, X } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-interface GroupSidebarProps {
-  members: Member[];
-  pendingRequests: PendingRequests[];
-  isOpen: boolean;
-  onClose: () => void;
-  group: GroupDetails;
-}
 
-const GroupSidebarComponent = ({members, pendingRequests, isOpen, onClose, group}: GroupSidebarProps) => {
+const GroupSidebarComponent = ({ data, isOpen, onClose }: { data: GroupPageData; isOpen: boolean; onClose: () => void; }) => {
 
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const {data: session} = useSession();
-  const userId = session?.user?._id;
-  const isAdmin = group.admin._id === userId;
+  const { group, members, pendingMembers, userRole } = data;
+  const isAdmin = userRole === 'admin';
+  const router = useRouter();
 
-  const handleApproveReq = async (groupId: string, userId: string, action: string) => {
+  const handleApproveReq = async (groupId: string, userId: string, action: 'approve' | 'reject') => {
     try {
       setLoadingId(userId);
       setIsLoading(true);
@@ -33,30 +26,8 @@ const GroupSidebarComponent = ({members, pendingRequests, isOpen, onClose, group
         userId,
         action
       })
-      await new Promise(resolve => setTimeout(resolve, 300));
-      window.location.reload();
       toast.success(response.data.message || "User has approved");
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
-      let errorMessage = axiosError.response?.data.message || 'Failed to approve request';
-      toast.error(errorMessage);
-    } finally {
-      setLoadingId(null);
-      setIsLoading(false);
-    }
-  }
-
-  const handleRejectReq = async (groupId: string, userId: string, action: string) => {
-    try {
-      setLoadingId(userId);
-      setIsLoading(true);
-      const response = await axios.patch(`/api/savings/group/${groupId}/approve-member`, {
-        userId,
-        action
-      })
-      await new Promise(resolve => setTimeout(resolve, 300));
-      window.location.reload();
-      toast.success(response.data.message || "User has approved");
+      router.refresh();
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       let errorMessage = axiosError.response?.data.message || 'Failed to approve request';
@@ -112,9 +83,9 @@ const GroupSidebarComponent = ({members, pendingRequests, isOpen, onClose, group
             {isAdmin && (
               <div>
               <div className="flex justify-between items-center mb-4 mt-20">
-                <h2 className="text-lg sm:text-lg font-semibold">Pending Requests ({pendingRequests.length})</h2>
+                <h2 className="text-lg sm:text-lg font-semibold">Pending Requests ({pendingMembers.length})</h2>
               </div>
-              {pendingRequests.map((member, index) => (
+              {pendingMembers.map((member, index) => (
                 <div key={member._id}> 
                   {index > 0 && <hr className="my-2 border-gray-300" />}
                   <div className="flex items-center gap-3 mb-3 p-2 hover:bg-gray-50 rounded">
@@ -142,7 +113,7 @@ const GroupSidebarComponent = ({members, pendingRequests, isOpen, onClose, group
                       {/* reject button */}
                       <Button 
                       disabled={isLoading}
-                      onClick={() => handleRejectReq(group._id, member._id, "reject")}
+                      onClick={() => handleApproveReq(group._id, member._id, "reject")}
                       variant="destructive" 
                       className="cursor-pointer h-6 w-6 sm:h-8 sm:w-8"
                       >

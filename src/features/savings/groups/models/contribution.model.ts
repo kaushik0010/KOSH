@@ -66,6 +66,7 @@ const contributionSchema: Schema<Contribution> = new Schema({
 }, {timestamps: true});
 
 contributionSchema.index({ userId: 1, campaignId: 1, month: 1, year: 1 }, { unique: true });
+contributionSchema.index({ campaignId: 1 });
 
 const ContributionModel = 
     (models.Contribution as mongoose.Model<Contribution>) ||

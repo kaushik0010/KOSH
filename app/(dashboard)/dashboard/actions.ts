@@ -1,17 +1,18 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import dbConnect from "@/src/features/auth/lib/dbConnect";
 import UserModel from "@/src/features/auth/models/user.model";
+import GroupModel from "@/src/features/savings/groups/models/group.model";
 import GroupMembershipModel from "@/src/features/savings/groups/models/groupMembership.model";
 import IndividualSavingModel from "@/src/features/savings/individual/models/individualSaving.model";
 import WalletTopUpModel from "@/src/features/savings/individual/models/walletTopUp.model";
 import { getServerSession } from "next-auth";
 import { unstable_noStore as noStore } from "next/cache";
 
-
 export async function getDashboardData() {
   noStore();
   try {
     await dbConnect();
+    GroupModel;
     const session = await getServerSession(authOptions);
     const userId = session?.user?._id;
 
@@ -27,7 +28,7 @@ export async function getDashboardData() {
         path: 'groupId',
         select: 'groupName'
       }).lean(),
-      WalletTopUpModel.find({ userId }).sort({ createdAt: -1 }).limit(5).lean(),
+      WalletTopUpModel.find({ userId }).sort({ date: -1 }).limit(5).lean(),
     ]);
 
     // pagination for wallet history

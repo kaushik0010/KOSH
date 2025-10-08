@@ -11,21 +11,15 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
-interface GroupHeaderProps {
-  group: GroupDetails;
-  onToggleSidebar: () => void;
-}
 
-
-const GroupHeaderComponent = ({group, onToggleSidebar}: GroupHeaderProps) => {
-  const {data: session} = useSession();
-  const userId = session?.user?._id;
-  const isMember = group.members.some((m: any) => m._id === userId);
-  const isAdmin = group.admin._id === userId;
+const GroupHeaderComponent = ({data, onToggleSidebar}: { data: GroupPageData; onToggleSidebar: () => void }) => {
+  const { data: session } = useSession();
   const [showMore, setShowMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
+
+  const { group, userRole, userMembershipStatus } = data
 
   const isPublic = group.groupType === "public";
 
@@ -119,10 +113,9 @@ const GroupHeaderComponent = ({group, onToggleSidebar}: GroupHeaderProps) => {
     try {
       setIsSaving(true);
       const response = await axios.patch(`/api/savings/group/${groupId}/update`, editGroup);
-      setEditMode(false);
-      await new Promise(resolve => setTimeout(resolve, 300));
-      window.location.reload();
       toast.success(response.data.message || "Group updated successfully");
+      setEditMode(false);
+      router.refresh();
 
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
@@ -132,6 +125,9 @@ const GroupHeaderComponent = ({group, onToggleSidebar}: GroupHeaderProps) => {
       setIsSaving(false);
     }
   }
+
+  const isAdmin = userRole === 'admin';
+  const isMember = userRole === 'admin' || userRole === 'member';
 
   return (
     <div className="p-4 border-b bg-white sticky top-0 z-10 px-3 sm:px-6">

@@ -48,6 +48,7 @@ const penaltySchema: Schema<Penalty> = new Schema({
 }, {timestamps: true});
 
 penaltySchema.index({ userId: 1, campaignId: 1, month: 1, year: 1 });
+penaltySchema.index({ campaignId: 1 });
 
 const PenaltyModel = 
     (models.Penalty as mongoose.Model<Penalty>) ||
