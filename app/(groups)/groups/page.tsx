@@ -1,4 +1,5 @@
 import dbConnect from '@/src/features/auth/lib/dbConnect';
+import UserModel from '@/src/features/auth/models/user.model';
 import ListAllGroupsComponent from '@/src/features/savings/groups/components/ListAllGroupsComponent'
 import GroupModel from '@/src/features/savings/groups/models/group.model';
 import React from 'react'
@@ -11,6 +12,7 @@ export const dynamic = 'force-dynamic';
 
 async function getFilteredGroups({ query, type, size }: { query: string; type: string; size: number; }) {
   await dbConnect();
+  UserModel;
 
   const dbQuery:any = {};
 
