@@ -63,6 +63,8 @@ export async function getGroupPageData(groupId: string): Promise<GroupPageData |
         pendingMembers = JSON.parse(JSON.stringify(rawPendingMembers));
     }
 
+    const remainingSeats = group.maxGroupSize - members.length;
+
     const cleanMembers: PopulatedMember[] = JSON.parse(JSON.stringify(members));
 
     const userRole = isAdmin ? 'admin' : (userMembership?.status === 'active' ? 'member' : null);
@@ -91,5 +93,6 @@ export async function getGroupPageData(groupId: string): Promise<GroupPageData |
         userMembershipStatus: userMembership?.status || null,
         activeCampaign: JSON.parse(JSON.stringify(activeCampaign)),
         isFull: members.length >= group.maxGroupSize,
+        remainingSeats: remainingSeats > 0 ? remainingSeats : 0,
     };
 }

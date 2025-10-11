@@ -92,7 +92,6 @@ interface GroupPageData {
             name: string;
         };
         maxGroupSize: number;
-        remainingSeats: number;
         criteria: Criteria;
     };
     members: {
@@ -114,4 +113,5 @@ interface GroupPageData {
         status: 'scheduled' | 'ongoing' | 'completed' | 'cancelled';
     } | null;
     isFull: boolean;
+    remainingSeats: number;
 }

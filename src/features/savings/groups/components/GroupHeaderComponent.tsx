@@ -289,7 +289,7 @@ const GroupHeaderComponent = ({data, onToggleSidebar}: { data: GroupPageData; on
         </div>
         <div className="bg-gray-50 p-2 rounded">
           <p className="text-gray-500">Remaining</p>
-          <p>{group.remainingSeats}</p>
+          <p>{data.remainingSeats}</p>
         </div>
         <div className="bg-gray-50 p-2 rounded">
           <p className="text-gray-500">Min. Wallet Balance</p>
