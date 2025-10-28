@@ -42,7 +42,7 @@ const DeleteAccountButton = () => {
           <span className="hidden sm:inline">Delete Account</span>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="bg-white">
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription className="pt-2">
@@ -51,7 +51,7 @@ const DeleteAccountButton = () => {
         </DialogHeader>
         <DialogFooter className="gap-2 pt-4">
           <DialogClose asChild>
-            <Button variant="outline" disabled={isLoading} className="flex-1">
+            <Button variant="default" disabled={isLoading} className="flex-1">
               Cancel
             </Button>
           </DialogClose>
@@ -64,7 +64,7 @@ const DeleteAccountButton = () => {
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              "Delete Account"
+              "Yes, Delete Account"
             )}
           </Button>
         </DialogFooter>
