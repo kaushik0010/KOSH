@@ -83,58 +83,73 @@ export async function POST(
         }).session(sessionDb);
 
         const userContributionsMap: Record<string, number> = {};
-        const userPenaltyMap: Record<string, number> = {};
-        const fullyPaidUsers: Set<string> = new Set();
+        let penaltyRedistributionPool = 0;
+        const fullyPaidUsers: Set<string> = new Set(participants);
+
+        for (const uid of participants) {
+            userContributionsMap[uid] = 0;
+        }
 
         for(const contribution of contributions) {
             const uid = contribution.userId.toString();
 
-            if(!userContributionsMap[uid]) userContributionsMap[uid] = 0;
-            if(!userPenaltyMap[uid]) userPenaltyMap[uid] = 0;
+            // if(!userContributionsMap[uid]) userContributionsMap[uid] = 0;
+            // if(!userPenaltyMap[uid]) userPenaltyMap[uid] = 0;
 
             if(contribution.status === "paid") {
-                userContributionsMap[uid] += contribution.amountPaid;
+                // userContributionsMap[uid] += contribution.amountPaid;
+                const baseContribution = contribution.amountPaid - contribution.penaltyApplied;
+                userContributionsMap[uid] += baseContribution;
+                penaltyRedistributionPool += contribution.penaltyApplied;
+            } else {
+                fullyPaidUsers.delete(uid);
             }
 
-            if(contribution.status !== "paid") {
-                userPenaltyMap[uid] += contribution.amountPaid;
-            }
+            // if(contribution.status !== "paid") {
+            //     userPenaltyMap[uid] += contribution.amountPaid;
+            // }
         }
 
-        for (const uid of participants) {
-            const userContributions = contributions.filter((c) => c.userId.toString() === uid);
-            const unpaid = userContributions.some((c) => c.status !== "paid");
-            if(!unpaid) fullyPaidUsers.add(uid);
-        }
+        // for (const uid of participants) {
+        //     const userContributions = contributions.filter((c) => c.userId.toString() === uid);
+        //     const unpaid = userContributions.some((c) => c.status !== "paid");
+        //     if(!unpaid) fullyPaidUsers.add(uid);
+        // }
 
-        const penaltyRedistributionPool = Object.entries(userPenaltyMap)
-            .filter(([uid, penalty]) => {
-                const userContributions = contributions.filter((c) => c.userId.toString());
-                const unpaid = userContributions.some((c) => c.status !== "paid");
-                return unpaid && penalty > 0;
-            })
-            .reduce((acc, [_, penalty]) => acc+penalty, 0);
+        // const penaltyRedistributionPool = Object.entries(userPenaltyMap)
+        //     .filter(([uid, penalty]) => {
+        //         const userContributions = contributions.filter((c) => c.userId.toString());
+        //         const unpaid = userContributions.some((c) => c.status !== "paid");
+        //         return unpaid && penalty > 0;
+        //     })
+        //     .reduce((acc, [_, penalty]) => acc+penalty, 0);
         
-        const payoutMap: Record<string, number> = {};
-        const eligibleReceivers = fullyPaidUsers.size;
-
-        for(const uid of participants) {
-            const contributed = userContributionsMap[uid] || 0;
-            const penalty = userPenaltyMap[uid] || 0;
-
-            let finalPayout = contributed;
-            if(penalty > 0) {
-                finalPayout -= penalty;
-            }
-
-            payoutMap[uid] = finalPayout;
-        }
-
-        const bonusPerUser = eligibleReceivers > 0 ? 
-            Math.floor(penaltyRedistributionPool / eligibleReceivers) : 0
-
+        const payoutMap: Record<string, number> = { ...userContributionsMap };
         const penaltyRedistributionMap: Record<string, number> = {};
+        const eligibleReceivers = fullyPaidUsers.size;
+        let bonusPerUser = 0;
 
+        // for(const uid of participants) {
+        //     const contributed = userContributionsMap[uid] || 0;
+        //     const penalty = userPenaltyMap[uid] || 0;
+
+        //     let finalPayout = contributed;
+        //     if(penalty > 0) {
+        //         finalPayout -= penalty;
+        //     }
+
+        //     payoutMap[uid] = finalPayout;
+        // }
+
+        // const bonusPerUser = eligibleReceivers > 0 ? 
+        //     Math.floor(penaltyRedistributionPool / eligibleReceivers) : 0
+
+        // const penaltyRedistributionMap: Record<string, number> = {};
+
+        if (eligibleReceivers > 0 && penaltyRedistributionPool > 0) {
+            // Use Math.floor to avoid floating point issues.
+            bonusPerUser = Math.floor(penaltyRedistributionPool / eligibleReceivers);
+        }
 
         // Distribute bonuses only to fully paid members
         for(const uid of fullyPaidUsers) {
@@ -143,11 +158,22 @@ export async function POST(
         }
 
         // update wallet balance
-        for(const [uid, amount] of Object.entries(payoutMap)) {
-            await UserModel.findByIdAndUpdate(uid, {
-                $inc: {walletBalance: amount},
-            }).session(sessionDb);
-        }
+        // for(const [uid, amount] of Object.entries(payoutMap)) {
+        //     await UserModel.findByIdAndUpdate(uid, {
+        //         $inc: {walletBalance: amount},
+        //     }).session(sessionDb);
+        // }
+
+        const updatePromises = Object.entries(payoutMap).map(([uid, amount]) => {
+            if (amount > 0) { // Only update if there is something to pay out
+                return UserModel.findByIdAndUpdate(uid, {
+                    $inc: { walletBalance: amount },
+                }).session(sessionDb);
+            }
+            return Promise.resolve();
+        });
+        
+        await Promise.all(updatePromises);
 
         campaign.isDistributed = true;
         campaign.status = "completed"

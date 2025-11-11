@@ -310,7 +310,7 @@ const GroupHeaderComponent = ({data, onToggleSidebar}: { data: GroupPageData; on
             className="w-full text-sm"
             />
           ) : (
-            <p>{group.criteria.minimumWalletBalance}</p>
+            <p>{group.criteria?.minimumWalletBalance}</p>
           )}
         </div>
       </div>

@@ -48,6 +48,9 @@ const ListAllGroupsComponent = ({ initialGroups }: { initialGroups: Group[] }) =
             <div className="p-6 flex flex-col items-center justify-center space-y-4 min-h-[300px]">
                 <div className="text-2xl font-bold text-muted-foreground">No groups available</div>
                 <p className="text-muted-foreground">Check back later or create your own group</p>
+                <Button asChild className='sm:w-auto text-xs sm:text-sm bg-blue-600 hover:bg-blue-700 text-white'>
+                    <Link className='flex gap-2 items-center' href={'/create-group'}>Create Group <PlusIcon /></Link>
+                </Button>
             </div>
         )
     }

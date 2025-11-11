@@ -33,7 +33,8 @@ const DashboardSkeleton = () => (
 const Dashboard = async () => {
   const {
     user,
-    activeCampaign,
+    activeRegularCampaign,
+    activeFlexibleCampaign,
     savingsHistory,
     joinedGroups,
     walletHistory,
@@ -64,7 +65,10 @@ const Dashboard = async () => {
                 initialTotalPages={walletHistory.totalPages}
               />
             </div>
-            <CurrentIndividualPlans initialCampaign={serialize(activeCampaign)} />
+            <CurrentIndividualPlans 
+              initialRegularCampaign={serialize(activeRegularCampaign)} 
+              initialFlexibleCampaign={serialize(activeFlexibleCampaign)} 
+            />
           </div>
 
           <div className="space-y-6">

@@ -104,35 +104,49 @@ export async function PATCH(
             }, { status: 400 });
         }
 
+        const currentMonth = today.getMonth() + 1; 
+        const currentYear = today.getFullYear();
+
         const contribution = await ContributionModel.findOne({
             campaignId,
             groupId,
             userId,
-            status: "pending"
-        }).sort({scheduledDate: 1})
+            month: currentMonth,
+            year: currentYear,
+        })
 
         if(!contribution) {
             return NextResponse.json({
                 success: false,
-                message: "No pending contribution found for this month"
+                message: "No contribution scheduled for this month yet."
             }, {status: 404});
         }
 
-        const { scheduledDate, year, month } = contribution;
-
-        function getDaysInMonth(year: number, monthIndex: number): number {
-            return new Date(year, monthIndex + 1, 0).getDate();
+        if (contribution.status === "paid") {
+            return NextResponse.json({
+                success: false,
+                message: "You have already paid for this month."
+            }, { status: 400 });
         }
 
-        const daysInMonth = getDaysInMonth(scheduledDate.getFullYear(), scheduledDate.getMonth());
+        // const { scheduledDate } = contribution;
+
+        // function getDaysInMonth(year: number, monthIndex: number): number {
+        //     return new Date(year, monthIndex + 1, 0).getDate();
+        // }
+
+        const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
         const validSavingsDay = Math.min(savingsDay, daysInMonth);
-        const windowStart = subDays(setDate(new Date(year, month - 1, 1), validSavingsDay), 10);
-        const windowEnd = setDate(new Date(year, month - 1, 1), validSavingsDay);
+        const windowStart = subDays(new Date(currentYear, currentMonth - 1, validSavingsDay), 10);
+        const windowEnd = new Date(currentYear, currentMonth - 1, validSavingsDay);
+
+        windowStart.setHours(0, 0, 0, 0);
+        windowEnd.setHours(23, 59, 59, 999);
 
         if (today < windowStart) {
             return NextResponse.json({
                 success: false,
-                message: `You can contribute starting ${windowStart.toDateString()}`,
+                message: `Payment window for this month opens on ${windowStart.toDateString()}`,
             }, { status: 400 });
         }
 
@@ -180,7 +194,7 @@ export async function PATCH(
         contribution.isLate = isLate;
         contribution.penaltyApplied = penaltyApplied;
         contribution.status = "paid";
-        contribution.paidOn = new Date();
+        contribution.paidOn = today;
         
         await contribution.save();
 

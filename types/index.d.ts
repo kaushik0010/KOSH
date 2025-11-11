@@ -58,10 +58,21 @@ interface PendingRequests {
   name: string;
 }
 
-interface Campaign {
+interface RegularCampaign {
   _id: string;
   campaignName: string;
   amountPerMonth: number;
+  totalAmount: number;
+  amountSaved: number;
+  startDate: string;
+  endDate: string;
+}
+
+interface FlexibleCampaign {
+  _id: string;
+  campaignName: string;
+  frequency: string;
+  amountPerContribution: number;
   totalAmount: number;
   amountSaved: number;
   startDate: string;

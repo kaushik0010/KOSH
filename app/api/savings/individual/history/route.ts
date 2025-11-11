@@ -1,5 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import dbConnect from "@/src/features/auth/lib/dbConnect";
+import FlexibleSavingModel from "@/src/features/savings/individual/models/flexibleSaving.model";
 import IndividualSavingModel from "@/src/features/savings/individual/models/individualSaving.model";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
@@ -17,14 +18,39 @@ export async function GET() {
             }, {status: 401});
         }
 
-        const campaignHistory = await IndividualSavingModel.find({
-            userId: session?.user._id,
+        const userId = session.user._id;
+
+        const regularHistoryPromise = IndividualSavingModel.find({
+            userId: userId,
             isActive: false,
-        }).select('campaignName amountSaved endDate')
+        }).select('campaignName amountSaved endDate').lean(); 
+
+        const flexibleHistoryPromise = FlexibleSavingModel.find({
+            userId: userId,
+            isActive: false,
+        }).select('campaignName amountSaved endDate').lean(); 
+
+        const [regularHistory, flexibleHistory] = await Promise.all([
+            regularHistoryPromise,
+            flexibleHistoryPromise
+        ]);
+
+        const combinedHistory = [
+            ...regularHistory.map(plan => ({
+                ...plan,
+                planType: 'regular' 
+            })),
+            ...flexibleHistory.map(plan => ({
+                ...plan,
+                planType: 'flexible' 
+            }))
+        ];
+
+        combinedHistory.sort((a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime());
         
-        if(!campaignHistory) {
+        if(combinedHistory.length === 0) {
             return NextResponse.json({
-                success: false,
+                success: true, 
                 message: 'No history to show yet',
                 campaign: []
             }, {status: 200});
@@ -32,8 +58,8 @@ export async function GET() {
         
         return NextResponse.json({ 
             success: true,
-            message: "Savings history successfully",
-            campaign: campaignHistory 
+            message: "Savings history fetched successfully",
+            campaign: combinedHistory 
         }, {status: 200});
 
     } catch (error) {
