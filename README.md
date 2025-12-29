@@ -7,10 +7,6 @@
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-38B2AC?style=for-the-badge&logo=tailwind-css)
 ![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)
 
-## 📖 Overview
-👉 [Live Demo](https://kosh-pearl.vercel.app)  
-*Replace this with a link to your 2-3 minute demo video once it's ready!*
-
 ## 🎯 The Problem
 
 Managing personal savings is hard, but managing *group savings* is even harder. Whether it's for a vacation, a shared goal, or a traditional savings circle (like a *susu* or *chit fund*), groups rely on messy spreadsheets, constant reminders, and social pressure. This process is prone to errors, missed payments, and a lack of transparency, often leading to failed goals and frustration.
