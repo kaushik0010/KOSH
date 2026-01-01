@@ -18,6 +18,25 @@ Managing personal savings is hard, but managing *group savings* is even harder. 
 By enforcing rules, automating contributions, and applying penalties for missed payments, KOSH transforms a chaotic social process into a simple, disciplined financial tool, helping users build healthy financial habits and achieve their goals together.
 
 
+## 🧠 Key Design Decisions
+
+### 1. Contribution Windows + Penalties
+Instead of allowing payments anytime, I introduced fixed contribution windows.
+- Late payments incur penalties (capped at 40%)
+- Missed payments reduce final payout eligibility
+
+**Tradeoff:** More complex backend logic  
+**Reason:** Ensures fairness and prevents manipulation
+
+### 2. Admin-Controlled Group Lifecycle
+Admins control member approval, campaign start, and payout.
+**Tradeoff:** Centralized control  
+**Reason:** Mirrors real-world savings groups and avoids chaos
+
+### 3. No Real Money Handling
+This version intentionally avoids real payments.
+**Reason:** Focus on system design and correctness before compliance & security complexity
+
 
 ## ✨ Key Features
 
